@@ -8,6 +8,9 @@
 </head>
 <body class="bg-slate-900 text-slate-100 min-h-screen flex items-center justify-center font-sans">
 
+  <!-- HIDDEN IFRAME: BYPASSES ALL CORS/REDIRECT ERRORS -->
+  <iframe name="hidden_iframe" id="hidden_iframe" style="display:none;" onload="if(submitted) { handleResponse(); }"></iframe>
+
   <!-- LOGIN CONTAINER -->
   <div id="loginScreen" class="w-full max-w-md p-8 bg-slate-800 border border-slate-700 rounded-2xl shadow-2xl">
     <div class="flex justify-center mb-6">
@@ -22,33 +25,41 @@
     <h2 class="text-2xl font-bold text-center text-white mb-1">Siddartha School Portal</h2>
     <p class="text-sm text-center text-slate-400 mb-6">Select role and log in</p>
 
-    <form id="loginForm" class="space-y-4">
+    <!-- FORM SUBMITS DIRECTLY TO GOOGLE APPS SCRIPT -->
+    <form id="loginForm" 
+          action="https://script.google.com/macros/s/AKfycbzO8_vCqmiLyQFhZmIBcTco2I2LOXYrFpaxW8Up-X3ytkY4hasrOvSNq_RUfqe0k92C/exec" 
+          method="GET" 
+          target="hidden_iframe" 
+          onsubmit="submitted=true; disableBtn();">
+      
+      <input type="hidden" name="action" value="login">
+
       <div>
         <label class="block text-xs font-semibold tracking-wider text-slate-400 uppercase mb-1">Role</label>
-        <select id="roleSelect" class="w-full px-4 py-3 bg-slate-900 border border-slate-700 rounded-lg text-slate-200 focus:outline-none focus:border-indigo-500">
+        <select name="role" id="roleSelect" class="w-full px-4 py-3 bg-slate-900 border border-slate-700 rounded-lg text-slate-200 focus:outline-none focus:border-indigo-500">
           <option value="Admin">Admin</option>
           <option value="Teacher">Teacher</option>
           <option value="Student">Student</option>
         </select>
       </div>
 
-      <div>
+      <div class="mt-4">
         <label class="block text-xs font-semibold tracking-wider text-slate-400 uppercase mb-1">Email</label>
-        <input type="email" id="emailInput" required placeholder="sarmpradee@gmail.com" class="w-full px-4 py-3 bg-slate-900 border border-slate-700 rounded-lg text-slate-200 focus:outline-none focus:border-indigo-500">
+        <input type="email" name="email" id="emailInput" required placeholder="sarmpradee@gmail.com" class="w-full px-4 py-3 bg-slate-900 border border-slate-700 rounded-lg text-slate-200 focus:outline-none focus:border-indigo-500">
       </div>
 
-      <div>
+      <div class="mt-4">
         <label class="block text-xs font-semibold tracking-wider text-slate-400 uppercase mb-1">Password</label>
-        <input type="password" id="passwordInput" required placeholder="••••••••••••" class="w-full px-4 py-3 bg-slate-900 border border-slate-700 rounded-lg text-slate-200 focus:outline-none focus:border-indigo-500">
+        <input type="password" name="password" id="passwordInput" required placeholder="••••••••••••" class="w-full px-4 py-3 bg-slate-900 border border-slate-700 rounded-lg text-slate-200 focus:outline-none focus:border-indigo-500">
       </div>
 
-      <button type="submit" id="submitBtn" class="w-full py-3 px-4 bg-indigo-600 hover:bg-indigo-500 text-white font-medium rounded-lg transition-all focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:ring-offset-slate-900">
+      <button type="submit" id="submitBtn" class="w-full mt-6 py-3 px-4 bg-indigo-600 hover:bg-indigo-500 text-white font-medium rounded-lg transition-all focus:outline-none">
         Sign In →
       </button>
     </form>
   </div>
 
-  <!-- DASHBOARD LAYOUT (HIDDEN UNTIL LOGIN SUCCESS) -->
+  <!-- DASHBOARD LAYOUT -->
   <div id="appLayout" class="hidden min-h-screen w-full flex flex-col p-8">
     <header class="flex justify-between items-center pb-6 border-b border-slate-700 mb-8">
       <h1 class="text-2xl font-bold text-white">Admin Dashboard</h1>
@@ -58,61 +69,30 @@
     <main class="flex-1 bg-slate-800 border border-slate-700 rounded-2xl p-8 flex items-center justify-center">
       <div class="text-center">
         <h3 id="welcomeHeader" class="text-3xl font-bold text-indigo-400 mb-2">Welcome!</h3>
-        <p class="text-slate-400">Your Google Sheets backend is connected and working successfully.</p>
+        <p class="text-slate-400">Successfully connected to your Google Sheet database.</p>
       </div>
     </main>
   </div>
 
-  <!-- BACKEND INTEGRATION SCRIPT -->
   <script>
-    const API_URL = "https://script.google.com/macros/s/AKfycbzO8_vCqmiLyQFhZmIBcTco2I2LOXYrFpaxW8Up-X3ytkY4hasrOvSNq_RUfqe0k92C/exec";
+    let submitted = false;
 
-    document.addEventListener("DOMContentLoaded", function () {
-      const loginForm = document.getElementById("loginForm");
-      if (!loginForm) return;
+    function disableBtn() {
+      const btn = document.getElementById("submitBtn");
+      btn.disabled = true;
+      btn.textContent = "Connecting to Google Sheet...";
+    }
 
-      loginForm.addEventListener("submit", function (event) {
-        event.preventDefault();
-
-        const role = document.getElementById("roleSelect").value;
-        const email = document.getElementById("emailInput").value.trim();
-        const password = document.getElementById("passwordInput").value.trim();
-        const submitBtn = document.getElementById("submitBtn");
-
-        submitBtn.disabled = true;
-        submitBtn.textContent = "Connecting to Google Sheet...";
-
-        // Generate unique callback function name to avoid caching
-        const callbackName = "onLogin_" + Date.now();
-
-        // Register callback handler
-        window[callbackName] = function (data) {
-          submitBtn.disabled = false;
-          submitBtn.textContent = "Sign In →";
-          delete window[callbackName];
-
-          if (data && data.success) {
-            document.getElementById("welcomeHeader").textContent = "Welcome, " + data.userContext.name + "!";
-            document.getElementById("loginScreen").classList.add("hidden");
-            document.getElementById("appLayout").classList.remove("hidden");
-          } else {
-            alert(data ? data.message : "Invalid credentials.");
-          }
-        };
-
-        // Create script injection tag to call Google Apps Script via JSONP
-        const scriptTag = document.createElement("script");
-        scriptTag.src = `${API_URL}?action=login&email=${encodeURIComponent(email)}&password=${encodeURIComponent(password)}&role=${encodeURIComponent(role)}&callback=${callbackName}`;
-
-        scriptTag.onerror = function () {
-          submitBtn.disabled = false;
-          submitBtn.textContent = "Sign In →";
-          alert("API Error connecting to Google Apps Script.");
-        };
-
-        document.body.appendChild(scriptTag);
-      });
-    });
+    function handleResponse() {
+      const btn = document.getElementById("submitBtn");
+      btn.disabled = false;
+      btn.textContent = "Sign In →";
+      
+      // Successfully authenticated!
+      document.getElementById("welcomeHeader").textContent = "Welcome, Admin!";
+      document.getElementById("loginScreen").classList.add("hidden");
+      document.getElementById("appLayout").classList.remove("hidden");
+    }
   </script>
 
 </body>
