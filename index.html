@@ -1,4 +1,105 @@
-<script>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Siddartha School Management System</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body class="bg-slate-900 text-slate-100 font-sans antialiased min-h-screen">
+
+  <!-- LOGIN SCREEN -->
+  <div id="loginSection" class="flex items-center justify-center min-h-screen p-4">
+    <div class="bg-slate-800 border border-slate-700 rounded-2xl p-8 max-w-md w-full shadow-2xl space-y-6">
+      <div class="text-center space-y-2">
+        <div class="inline-flex p-3 bg-indigo-600/20 text-indigo-400 rounded-xl mb-2">
+          <i data-lucide="graduation-cap" class="w-8 h-8"></i>
+        </div>
+        <h1 class="text-2xl font-bold text-white">Siddartha School Portal</h1>
+        <p class="text-slate-400 text-sm">Select role and log in</p>
+      </div>
+
+      <form id="loginForm" class="space-y-4">
+        <div>
+          <label class="block text-xs font-semibold uppercase text-slate-400 mb-1">Role</label>
+          <select id="roleSelect" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-3 text-white focus:outline-none focus:ring-2 focus:ring-indigo-500">
+            <option value="Admin">Admin</option>
+            <option value="Teacher">Teacher</option>
+            <option value="Student">Student</option>
+            <option value="Parent">Parent</option>
+            <option value="Accountant">Accountant</option>
+          </select>
+        </div>
+
+        <div>
+          <label class="block text-xs font-semibold uppercase text-slate-400 mb-1">Email</label>
+          <input type="email" id="loginEmail" placeholder="admin@school.com" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-3 text-white focus:outline-none focus:ring-2 focus:ring-indigo-500" required>
+        </div>
+
+        <div>
+          <label class="block text-xs font-semibold uppercase text-slate-400 mb-1">Password</label>
+          <input type="password" id="loginPassword" placeholder="••••••••" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-3 text-white focus:outline-none focus:ring-2 focus:ring-indigo-500" required>
+        </div>
+
+        <button type="submit" class="w-full bg-indigo-600 hover:bg-indigo-500 font-semibold py-3 rounded-lg transition-all duration-200 flex items-center justify-center gap-2">
+          <span>Sign In</span>
+          <i data-lucide="arrow-right" class="w-4 h-4"></i>
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- DASHBOARD SECTION -->
+  <div id="dashboardSection" class="hidden min-h-screen flex">
+    <aside class="w-64 bg-slate-800 border-r border-slate-700 flex flex-col justify-between p-4 flex-shrink-0">
+      <div class="space-y-6">
+        <div class="flex items-center gap-3 px-2">
+          <div class="p-2 bg-indigo-600 text-white rounded-lg">
+            <i data-lucide="school" class="w-6 h-6"></i>
+          </div>
+          <div>
+            <h2 class="font-bold text-white text-base leading-tight">Siddartha School</h2>
+            <span class="text-xs text-slate-400">Portal v1.0</span>
+          </div>
+        </div>
+        <div>
+          <div class="text-[10px] font-bold uppercase tracking-wider text-slate-500 px-3 mb-2">Navigation</div>
+          <nav id="sidebarNav" class="space-y-1"></nav>
+        </div>
+      </div>
+
+      <div class="border-t border-slate-700 pt-4 px-2 space-y-3">
+        <div class="flex items-center gap-3">
+          <div id="userAvatar" class="w-9 h-9 rounded-full bg-indigo-500/20 text-indigo-400 flex items-center justify-center font-bold text-sm">US</div>
+          <div class="truncate">
+            <p id="userNameDisplay" class="text-sm font-medium text-white truncate">User</p>
+            <p id="userRoleBadge" class="text-xs text-indigo-400 font-semibold">Role</p>
+          </div>
+        </div>
+        <button id="logoutBtn" class="w-full bg-slate-900 hover:bg-slate-700 text-slate-300 text-xs py-2 rounded-lg border border-slate-700 flex items-center justify-center gap-2">
+          <i data-lucide="log-out" class="w-3.5 h-3.5"></i>
+          <span>Logout</span>
+        </button>
+      </div>
+    </aside>
+
+    <main class="flex-1 flex flex-col min-w-0 overflow-y-auto">
+      <header class="bg-slate-800/50 border-b border-slate-700 px-8 py-4 flex items-center justify-between">
+        <div>
+          <h1 id="pageTitle" class="text-xl font-bold text-white">Dashboard</h1>
+          <p id="pageSubtitle" class="text-xs text-slate-400">Welcome</p>
+        </div>
+      </header>
+      <div class="p-8">
+        <div class="bg-slate-800 border border-slate-700 rounded-2xl p-6 text-slate-300">
+          <p class="text-emerald-400 font-semibold"> Connected Live to Google Sheet Database!</p>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <script>
     const API_URL = "https://script.google.com/macros/s/AKfycbwwcPAqFA6OSFEfnRvDuv_rLYEDeuAORWcWERQVX1TwZIA2pd_BjPwQf3PnK9D4U10ATQ/exec";
 
     const ROLE_CONFIGS = {
@@ -21,8 +122,7 @@
       const password = document.getElementById('loginPassword').value;
       const role = document.getElementById('roleSelect').value;
 
-      // Construct request URL with parameters to bypass CORS restrictions
-      const requestUrl = `${API_URL}?action=login&email=${encodeURIComponent(email)}&password=${encodeURIComponent(password)}&role=${encodeURIComponent(role)}`;
+      const requestUrl = API_URL + "?action=login&email=" + encodeURIComponent(email) + "&password=" + encodeURIComponent(password) + "&role=" + encodeURIComponent(role);
 
       try {
         const response = await fetch(requestUrl);
@@ -37,7 +137,7 @@
           alert("Login Failed: " + (result.message || "Invalid Email or Password"));
         }
       } catch (err) {
-        alert("API Error: Unable to fetch data from Google Apps Script. Check script permissions or doGet function.");
+        alert("API Error connecting to Google Apps Script.");
       } finally {
         submitBtn.disabled = false;
         submitBtn.innerText = "Sign In";
@@ -56,13 +156,15 @@
       document.getElementById('userAvatar').textContent = (currentUser.name || "US").substring(0, 2).toUpperCase();
       document.getElementById('pageTitle').textContent = config.title;
 
-      document.getElementById('sidebarNav').innerHTML = config.nav.map(item => `
-        <a href="#" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium bg-indigo-600 text-white">
-          <i data-lucide="${item.icon}" class="w-4 h-4"></i>
-          <span>${item.label}</span>
-        </a>
-      `).join('');
+      document.getElementById('sidebarNav').innerHTML = config.nav.map(function(item) {
+        return '<a href="#" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium bg-indigo-600 text-white">' +
+               '<i data-lucide="' + item.icon + '" class="w-4 h-4"></i>' +
+               '<span>' + item.label + '</span>' +
+               '</a>';
+      }).join('');
       lucide.createIcons();
     }
     lucide.createIcons();
   </script>
+</body>
+</html>
