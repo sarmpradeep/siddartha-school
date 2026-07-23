@@ -100,45 +100,63 @@
   </div>
 
   <script>
-    const API_URL = "https://script.google.com/macros/s/AKfycbzO8_vCqmiLyQFhZmIBcTco2I2LOXYrFpaxW8Up-X3ytkY4hasrOvSNq_RUfqe0k92C/exec";
+  const API_URL = "https://script.google.com/macros/s/AKfycbzO8_vCqmiLyQFhZmIBcTco2I2LOXYrFpaxW8Up-X3ytkY4hasrOvSNq_RUfqe0k92C/exec";
 
-    const ROLE_CONFIGS = {
-      Admin: { title: 'Admin Console', nav: [{ label: 'Overview', icon: 'layout-dashboard', active: true }] },
-      Teacher: { title: 'Teacher Portal', nav: [{ label: 'Attendance & Marks', icon: 'check-square', active: true }] },
-      Student: { title: 'Student Portal', nav: [{ label: 'My Report Card', icon: 'award', active: true }] },
-      Parent: { title: 'Parent Portal', nav: [{ label: 'Child Progress', icon: 'heart', active: true }] },
-      Accountant: { title: 'Accounts Portal', nav: [{ label: 'Fee Management', icon: 'dollar-sign', active: true }] }
-    };
+  // Login handler using JSONP script injection
+  document.addEventListener("DOMContentLoaded", function () {
+    const loginForm = document.querySelector("form");
+    if (!loginForm) return;
 
-    let currentUser = null;
+    loginForm.addEventListener("submit", function (event) {
+      event.preventDefault();
 
-    document.getElementById('loginForm').addEventListener('submit', async (e) => {
-      e.preventDefault();
-      const submitBtn = e.target.querySelector('button');
-      submitBtn.disabled = true;
-      submitBtn.innerText = "Connecting to Google Sheet...";
+      const role = document.getElementById("roleSelect") ? document.getElementById("roleSelect").value : "Admin";
+      const email = document.getElementById("emailInput") ? document.getElementById("emailInput").value.trim() : "";
+      const password = document.getElementById("passwordInput") ? document.getElementById("passwordInput").value.trim() : "";
+      const submitBtn = loginForm.querySelector("button[type='submit']");
 
-      const email = document.getElementById('loginEmail').value;
-      const password = document.getElementById('loginPassword').value;
-      const role = document.getElementById('roleSelect').value;
+      if (submitBtn) {
+        submitBtn.disabled = true;
+        submitBtn.textContent = "Connecting to Google Sheet...";
+      }
 
-      const requestUrl = API_URL + "?action=login&email=" + encodeURIComponent(email) + "&password=" + encodeURIComponent(password) + "&role=" + encodeURIComponent(role);
+      // Unique callback function name
+      const callbackName = "onLogin_" + Date.now();
 
-      try {
-        const response = await fetch(requestUrl);
-        const result = await response.json();
-
-        if (result.success) {
-          currentUser = result.userContext || { name: email.split('@')[0], role: role };
-          renderDashboard();
-          document.getElementById('loginSection').classList.add('hidden');
-          document.getElementById('dashboardSection').classList.remove('hidden');
-        } else {
-          alert("Login Failed: " + (result.message || "Invalid Email or Password"));
+      // Setup global response listener
+      window[callbackName] = function (data) {
+        if (submitBtn) {
+          submitBtn.disabled = false;
+          submitBtn.textContent = "Sign In →";
         }
-      } catch (err) {
+        delete window[callbackName];
+
+        if (data && data.success) {
+          alert("Welcome " + data.userContext.name + "!");
+          // Hide login screen, display dashboard
+          document.getElementById("loginScreen").classList.add("hidden");
+          document.getElementById("appLayout").classList.remove("hidden");
+        } else {
+          alert(data ? data.message : "Invalid credentials.");
+        }
+      };
+
+      // Create dynamic script tag to call Apps Script without CORS issues
+      const script = document.createElement("script");
+      script.src = `${API_URL}?action=login&email=${encodeURIComponent(email)}&password=${encodeURIComponent(password)}&role=${encodeURIComponent(role)}&callback=${callbackName}`;
+      
+      script.onerror = function () {
+        if (submitBtn) {
+          submitBtn.disabled = false;
+          submitBtn.textContent = "Sign In →";
+        }
         alert("API Error connecting to Google Apps Script.");
-      } finally {
+      };
+
+      document.body.appendChild(script);
+    });
+  });
+</script>      } finally {
         submitBtn.disabled = false;
         submitBtn.innerText = "Sign In";
       }
