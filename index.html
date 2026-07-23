@@ -3,186 +3,117 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Siddartha School Management System</title>
+  <title>Siddartha School Portal</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  <script src="https://unpkg.com/lucide@latest"></script>
 </head>
-<body class="bg-slate-900 text-slate-100 font-sans antialiased min-h-screen">
+<body class="bg-slate-900 text-slate-100 min-h-screen flex items-center justify-center font-sans">
 
-  <!-- LOGIN SCREEN -->
-  <div id="loginSection" class="flex items-center justify-center min-h-screen p-4">
-    <div class="bg-slate-800 border border-slate-700 rounded-2xl p-8 max-w-md w-full shadow-2xl space-y-6">
-      <div class="text-center space-y-2">
-        <div class="inline-flex p-3 bg-indigo-600/20 text-indigo-400 rounded-xl mb-2">
-          <i data-lucide="graduation-cap" class="w-8 h-8"></i>
-        </div>
-        <h1 class="text-2xl font-bold text-white">Siddartha School Portal</h1>
-        <p class="text-slate-400 text-sm">Select role and log in</p>
+  <!-- LOGIN CONTAINER -->
+  <div id="loginScreen" class="w-full max-w-md p-8 bg-slate-800 border border-slate-700 rounded-2xl shadow-2xl">
+    <div class="flex justify-center mb-6">
+      <div class="p-3 bg-indigo-600/20 text-indigo-400 rounded-xl">
+        <svg class="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l9-5-9-5-9 5 9 5z"/>
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0112 20.055a11.952 11.952 0 01-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z"/>
+        </svg>
+      </div>
+    </div>
+
+    <h2 class="text-2xl font-bold text-center text-white mb-1">Siddartha School Portal</h2>
+    <p class="text-sm text-center text-slate-400 mb-6">Select role and log in</p>
+
+    <form id="loginForm" class="space-y-4">
+      <div>
+        <label class="block text-xs font-semibold tracking-wider text-slate-400 uppercase mb-1">Role</label>
+        <select id="roleSelect" class="w-full px-4 py-3 bg-slate-900 border border-slate-700 rounded-lg text-slate-200 focus:outline-none focus:border-indigo-500">
+          <option value="Admin">Admin</option>
+          <option value="Teacher">Teacher</option>
+          <option value="Student">Student</option>
+        </select>
       </div>
 
-      <form id="loginForm" class="space-y-4">
-        <div>
-          <label class="block text-xs font-semibold uppercase text-slate-400 mb-1">Role</label>
-          <select id="roleSelect" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-3 text-white focus:outline-none focus:ring-2 focus:ring-indigo-500">
-            <option value="Admin">Admin</option>
-            <option value="Teacher">Teacher</option>
-            <option value="Student">Student</option>
-            <option value="Parent">Parent</option>
-            <option value="Accountant">Accountant</option>
-          </select>
-        </div>
+      <div>
+        <label class="block text-xs font-semibold tracking-wider text-slate-400 uppercase mb-1">Email</label>
+        <input type="email" id="emailInput" required placeholder="sarmpradee@gmail.com" class="w-full px-4 py-3 bg-slate-900 border border-slate-700 rounded-lg text-slate-200 focus:outline-none focus:border-indigo-500">
+      </div>
 
-        <div>
-          <label class="block text-xs font-semibold uppercase text-slate-400 mb-1">Email</label>
-          <input type="email" id="loginEmail" placeholder="admin@school.com" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-3 text-white focus:outline-none focus:ring-2 focus:ring-indigo-500" required>
-        </div>
+      <div>
+        <label class="block text-xs font-semibold tracking-wider text-slate-400 uppercase mb-1">Password</label>
+        <input type="password" id="passwordInput" required placeholder="••••••••••••" class="w-full px-4 py-3 bg-slate-900 border border-slate-700 rounded-lg text-slate-200 focus:outline-none focus:border-indigo-500">
+      </div>
 
-        <div>
-          <label class="block text-xs font-semibold uppercase text-slate-400 mb-1">Password</label>
-          <input type="password" id="loginPassword" placeholder="••••••••" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-3 text-white focus:outline-none focus:ring-2 focus:ring-indigo-500" required>
-        </div>
-
-        <button type="submit" class="w-full bg-indigo-600 hover:bg-indigo-500 font-semibold py-3 rounded-lg transition-all duration-200 flex items-center justify-center gap-2">
-          <span>Sign In</span>
-          <i data-lucide="arrow-right" class="w-4 h-4"></i>
-        </button>
-      </form>
-    </div>
+      <button type="submit" id="submitBtn" class="w-full py-3 px-4 bg-indigo-600 hover:bg-indigo-500 text-white font-medium rounded-lg transition-all focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:ring-offset-slate-900">
+        Sign In →
+      </button>
+    </form>
   </div>
 
-  <!-- DASHBOARD SECTION -->
-  <div id="dashboardSection" class="hidden min-h-screen flex">
-    <aside class="w-64 bg-slate-800 border-r border-slate-700 flex flex-col justify-between p-4 flex-shrink-0">
-      <div class="space-y-6">
-        <div class="flex items-center gap-3 px-2">
-          <div class="p-2 bg-indigo-600 text-white rounded-lg">
-            <i data-lucide="school" class="w-6 h-6"></i>
-          </div>
-          <div>
-            <h2 class="font-bold text-white text-base leading-tight">Siddartha School</h2>
-            <span class="text-xs text-slate-400">Portal v1.0</span>
-          </div>
-        </div>
-        <div>
-          <div class="text-[10px] font-bold uppercase tracking-wider text-slate-500 px-3 mb-2">Navigation</div>
-          <nav id="sidebarNav" class="space-y-1"></nav>
-        </div>
-      </div>
+  <!-- DASHBOARD LAYOUT (HIDDEN UNTIL LOGIN SUCCESS) -->
+  <div id="appLayout" class="hidden min-h-screen w-full flex flex-col p-8">
+    <header class="flex justify-between items-center pb-6 border-b border-slate-700 mb-8">
+      <h1 class="text-2xl font-bold text-white">Admin Dashboard</h1>
+      <button onclick="location.reload()" class="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-lg border border-slate-700 text-sm">Sign Out</button>
+    </header>
 
-      <div class="border-t border-slate-700 pt-4 px-2 space-y-3">
-        <div class="flex items-center gap-3">
-          <div id="userAvatar" class="w-9 h-9 rounded-full bg-indigo-500/20 text-indigo-400 flex items-center justify-center font-bold text-sm">US</div>
-          <div class="truncate">
-            <p id="userNameDisplay" class="text-sm font-medium text-white truncate">User</p>
-            <p id="userRoleBadge" class="text-xs text-indigo-400 font-semibold">Role</p>
-          </div>
-        </div>
-        <button id="logoutBtn" class="w-full bg-slate-900 hover:bg-slate-700 text-slate-300 text-xs py-2 rounded-lg border border-slate-700 flex items-center justify-center gap-2">
-          <i data-lucide="log-out" class="w-3.5 h-3.5"></i>
-          <span>Logout</span>
-        </button>
-      </div>
-    </aside>
-
-    <main class="flex-1 flex flex-col min-w-0 overflow-y-auto">
-      <header class="bg-slate-800/50 border-b border-slate-700 px-8 py-4 flex items-center justify-between">
-        <div>
-          <h1 id="pageTitle" class="text-xl font-bold text-white">Dashboard</h1>
-          <p id="pageSubtitle" class="text-xs text-slate-400">Welcome</p>
-        </div>
-      </header>
-      <div class="p-8">
-        <div class="bg-slate-800 border border-slate-700 rounded-2xl p-6 text-slate-300">
-          <p class="text-emerald-400 font-semibold"> Connected Live to Google Sheet Database!</p>
-        </div>
+    <main class="flex-1 bg-slate-800 border border-slate-700 rounded-2xl p-8 flex items-center justify-center">
+      <div class="text-center">
+        <h3 id="welcomeHeader" class="text-3xl font-bold text-indigo-400 mb-2">Welcome!</h3>
+        <p class="text-slate-400">Your Google Sheets backend is connected and working successfully.</p>
       </div>
     </main>
   </div>
 
+  <!-- BACKEND INTEGRATION SCRIPT -->
   <script>
-  const API_URL = "https://script.google.com/macros/s/AKfycbzO8_vCqmiLyQFhZmIBcTco2I2LOXYrFpaxW8Up-X3ytkY4hasrOvSNq_RUfqe0k92C/exec";
+    const API_URL = "https://script.google.com/macros/s/AKfycbzO8_vCqmiLyQFhZmIBcTco2I2LOXYrFpaxW8Up-X3ytkY4hasrOvSNq_RUfqe0k92C/exec";
 
-  // Login handler using JSONP script injection
-  document.addEventListener("DOMContentLoaded", function () {
-    const loginForm = document.querySelector("form");
-    if (!loginForm) return;
+    document.addEventListener("DOMContentLoaded", function () {
+      const loginForm = document.getElementById("loginForm");
+      if (!loginForm) return;
 
-    loginForm.addEventListener("submit", function (event) {
-      event.preventDefault();
+      loginForm.addEventListener("submit", function (event) {
+        event.preventDefault();
 
-      const role = document.getElementById("roleSelect") ? document.getElementById("roleSelect").value : "Admin";
-      const email = document.getElementById("emailInput") ? document.getElementById("emailInput").value.trim() : "";
-      const password = document.getElementById("passwordInput") ? document.getElementById("passwordInput").value.trim() : "";
-      const submitBtn = loginForm.querySelector("button[type='submit']");
+        const role = document.getElementById("roleSelect").value;
+        const email = document.getElementById("emailInput").value.trim();
+        const password = document.getElementById("passwordInput").value.trim();
+        const submitBtn = document.getElementById("submitBtn");
 
-      if (submitBtn) {
         submitBtn.disabled = true;
         submitBtn.textContent = "Connecting to Google Sheet...";
-      }
 
-      // Unique callback function name
-      const callbackName = "onLogin_" + Date.now();
+        // Generate unique callback function name to avoid caching
+        const callbackName = "onLogin_" + Date.now();
 
-      // Setup global response listener
-      window[callbackName] = function (data) {
-        if (submitBtn) {
+        // Register callback handler
+        window[callbackName] = function (data) {
           submitBtn.disabled = false;
           submitBtn.textContent = "Sign In →";
-        }
-        delete window[callbackName];
+          delete window[callbackName];
 
-        if (data && data.success) {
-          alert("Welcome " + data.userContext.name + "!");
-          // Hide login screen, display dashboard
-          document.getElementById("loginScreen").classList.add("hidden");
-          document.getElementById("appLayout").classList.remove("hidden");
-        } else {
-          alert(data ? data.message : "Invalid credentials.");
-        }
-      };
+          if (data && data.success) {
+            document.getElementById("welcomeHeader").textContent = "Welcome, " + data.userContext.name + "!";
+            document.getElementById("loginScreen").classList.add("hidden");
+            document.getElementById("appLayout").classList.remove("hidden");
+          } else {
+            alert(data ? data.message : "Invalid credentials.");
+          }
+        };
 
-      // Create dynamic script tag to call Apps Script without CORS issues
-      const script = document.createElement("script");
-      script.src = `${API_URL}?action=login&email=${encodeURIComponent(email)}&password=${encodeURIComponent(password)}&role=${encodeURIComponent(role)}&callback=${callbackName}`;
-      
-      script.onerror = function () {
-        if (submitBtn) {
+        // Create script injection tag to call Google Apps Script via JSONP
+        const scriptTag = document.createElement("script");
+        scriptTag.src = `${API_URL}?action=login&email=${encodeURIComponent(email)}&password=${encodeURIComponent(password)}&role=${encodeURIComponent(role)}&callback=${callbackName}`;
+
+        scriptTag.onerror = function () {
           submitBtn.disabled = false;
           submitBtn.textContent = "Sign In →";
-        }
-        alert("API Error connecting to Google Apps Script.");
-      };
+          alert("API Error connecting to Google Apps Script.");
+        };
 
-      document.body.appendChild(script);
+        document.body.appendChild(scriptTag);
+      });
     });
-  });
-</script>      } finally {
-        submitBtn.disabled = false;
-        submitBtn.innerText = "Sign In";
-      }
-    });
-
-    document.getElementById('logoutBtn').addEventListener('click', () => {
-      document.getElementById('dashboardSection').classList.add('hidden');
-      document.getElementById('loginSection').classList.remove('hidden');
-    });
-
-    function renderDashboard() {
-      const config = ROLE_CONFIGS[currentUser.role] || ROLE_CONFIGS.Admin;
-      document.getElementById('userNameDisplay').textContent = currentUser.name || "User";
-      document.getElementById('userRoleBadge').textContent = currentUser.role;
-      document.getElementById('userAvatar').textContent = (currentUser.name || "US").substring(0, 2).toUpperCase();
-      document.getElementById('pageTitle').textContent = config.title;
-
-      document.getElementById('sidebarNav').innerHTML = config.nav.map(function(item) {
-        return '<a href="#" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium bg-indigo-600 text-white">' +
-               '<i data-lucide="' + item.icon + '" class="w-4 h-4"></i>' +
-               '<span>' + item.label + '</span>' +
-               '</a>';
-      }).join('');
-      lucide.createIcons();
-    }
-    lucide.createIcons();
   </script>
+
 </body>
 </html>
